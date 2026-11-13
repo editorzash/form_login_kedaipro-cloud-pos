@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Autentikasi — KEDAIPRO Cloud POS</title>
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #10B981;
+      --primary-hover: #059669;
+      --primary-glow: rgba(16, 185, 129, 0.25);
+      --bg-page: #0B0F19;
+      --bg-card: #111827;
+      --bg-subtle: #1E293B;
+      --border: #1E293B;
+      --text: #F8FAFC;
+      --muted: #94A3B8;
+      --input-bg: #1F2937;
+      --shadow-card: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 26px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      width: 550px;
+      height: 550px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--primary-glow) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-1 { top: -120px; left: -100px; }
+    .glow-2 { bottom: -120px; right: -100px; }
+
+    .login-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1100px;
+      min-height: 640px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-card);
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      overflow: hidden;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* LEFT HERO PANEL */
+    .hero-panel {
+      background: linear-gradient(135deg, #064E3B 0%, #111827 50%, #0F172A 100%);
+      color: #FFFFFF;
+      padding: 48px 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-top {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #FFFFFF;
+      margin-bottom: 28px;
+    }
+
+    .hero-logo-box {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 22px;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .hero-brand-name {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-brand-tag {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      font-size: 12px;
+      font-weight: 700;
+      color: #10B981;
+      margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 28px;
+    }
+
+    .hero-features {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.9);
+      font-weight: 500;
+    }
+
+    .h-icon-box {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(16, 185, 129, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--primary);
+      flex-shrink: 0;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .live-status-card {
+      position: relative;
+      z-index: 2;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* RIGHT FORM PANEL */
+    .form-panel {
+      padding: 42px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--bg-card);
+    }
+
+    .form-title {
+      font-size: 23px;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .form-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .demo-roles-section {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      margin: 18px 0;
+    }
+
+    .demo-roles-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .demo-roles-pills {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .role-pill {
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 7px 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.2s;
+    }
+
+    .role-pill.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 3px 8px var(--primary-glow);
+    }
+
+    .login-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+      gap: 16px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 8px 4px 12px 4px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+    }
+
+    .tab-btn.active::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2.5px;
+      background: var(--primary);
+      border-radius: 99px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i.field-icon {
+      position: absolute;
+      left: 14px;
+      font-size: 14px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      height: 44px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0 14px 0 40px;
+      font-size: 13.5px;
+      color: var(--text);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .btn-toggle-pass {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+    }
+
+    .pin-dots-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 12px 0 16px 0;
+    }
+
+    .pin-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: all 0.2s;
+    }
+
+    .pin-dot.filled {
+      background: var(--primary);
+      transform: scale(1.15);
+      box-shadow: 0 0 8px var(--primary-glow);
+    }
+
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    .keypad-btn {
+      height: 46px;
+      border-radius: 10px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .keypad-btn:active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-submit {
+      width: 100%;
+      height: 48px;
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      transition: all 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-bypass {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 99px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: #1F2937;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      border-left: 4px solid var(--primary);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .login-wrapper { grid-template-columns: 1fr; max-width: 480px; }
+      .hero-panel { display: none; }
+      .form-panel { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <div class="login-wrapper">
+
+    <!-- LEFT PANEL -->
+    <div class="hero-panel">
+      <div class="hero-top">
+        <a href="../kedaipro-cloud-pos/index.html" class="hero-brand" title="Buka Langsung">
+          <div class="hero-logo-box">KP</div>
+          <div>
+            <span class="hero-brand-name">KEDAIPRO <span style="background:linear-gradient(135deg, #F59E0B, #D97706); color:#fff; font-size:10px; font-weight:800; padding:2px 6px; border-radius:4px;">OS v3.5</span></span>
+            <span class="hero-brand-tag">Smart Culinary & Warkop 24 Jam</span>
+          </div>
+        </a>
+
+        <div class="hero-badge">
+          <i class="fa-solid fa-mug-hot"></i>
+          <span>SISTEM OPERASI KASIR KEDAI MODERN</span>
+        </div>
+
+        <h1 class="hero-title">Kasir POS, Denah Meja & Kitchen Display Terpadu</h1>
+        <p class="hero-desc">Mendukung operasional cepat warkop 24 jam, kedai kopi, dan restoran: denah meja 2D visual, tiket dapur KDS, dan cetak struk thermal 58mm.</p>
+
+        <div class="hero-features">
+          <div class="hero-feature-item">
+            <div class="h-icon-box"><i class="fa-solid fa-map-location-dot"></i></div>
+            <span>Denah meja interaktif (12 meja) dengan indikator status real-time</span>
+          </div>
+          <div class="hero-feature-item">
+            <div class="h-icon-box"><i class="fa-solid fa-fire-burner"></i></div>
+            <span>Kitchen Display System (KDS) terhubung langsung ke dapur</span>
+          </div>
+          <div class="hero-feature-item">
+            <div class="h-icon-box"><i class="fa-solid fa-sliders"></i></div>
+            <span>Dialog varian menu (Level Pedas, Topping, & Catatan Koki)</span>
+          </div>
+          <div class="hero-feature-item">
+            <div class="h-icon-box"><i class="fa-solid fa-receipt"></i></div>
+            <span>Struk thermal 58mm dengan barcode & kirim WhatsApp 1-klik</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="live-status-card">
+        <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700;">
+          <div class="pulse-dot"></div>
+          <span>Mode Offline-First Aktif • Sinkronisasi Cloud Siap</span>
+        </div>
+        <span style="font-size:11.5px; opacity:0.8;">KEDAIPRO OS</span>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="form-panel">
+      <div>
+        <div style="margin-bottom:14px;">
+          <h2 class="form-title">Masuk Sistem Kasir</h2>
+          <p class="form-subtitle">Pilih akun demonstrasi atau masukkan kredensial kasir Anda.</p>
+        </div>
+
+        <!-- DEMO ROLES -->
+        <div class="demo-roles-section">
+          <div class="demo-roles-label">
+            <span>Akun Demonstrasi</span>
+            <span style="color:var(--primary); font-size:10px;">1-Klik Langsung Terisi</span>
+          </div>
+          <div class="demo-roles-pills">
+            <button type="button" class="role-pill active" id="pillOwner" onclick="setRole('owner')">
+              <i class="fa-solid fa-crown" style="color:#F59E0B;"></i>
+              <span>Owner</span>
+            </button>
+            <button type="button" class="role-pill" id="pillMgr" onclick="setRole('mgr')">
+              <i class="fa-solid fa-user-tie" style="color:#3B82F6;"></i>
+              <span>Manajer</span>
+            </button>
+            <button type="button" class="role-pill" id="pillCashier" onclick="setRole('cashier')">
+              <i class="fa-solid fa-cash-register" style="color:#10B981;"></i>
+              <span>Kasir Shift</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- MODE TABS -->
+        <div class="login-tabs">
+          <button type="button" class="tab-btn active" id="tabEmail" onclick="switchLoginTab('email')">
+            <i class="fa-solid fa-envelope"></i> Email / Akun
+          </button>
+          <button type="button" class="tab-btn" id="tabPin" onclick="switchLoginTab('pin')">
+            <i class="fa-solid fa-key"></i> PIN Layar Sentuh
+          </button>
+        </div>
+
+        <form onsubmit="doLogin(event)">
+          <div class="form-group">
+            <label class="form-label">Cabang Kedai / Warkop</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-store field-icon"></i>
+              <select class="form-select" id="selOutlet">
+                <option value="KedaiPro Kemang Boulevard">KedaiPro Kemang Boulevard</option>
+                <option value="KedaiPro Senopati 24 Jam">KedaiPro Senopati 24 Jam</option>
+                <option value="KedaiPro Gading Serpong">KedaiPro Gading Serpong</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="boxEmail">
+            <div class="form-group">
+              <label class="form-label">Email Pengguna</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-envelope field-icon"></i>
+                <input type="text" class="form-input" id="inputUser" value="owner@kedaipro.id" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Kata Sandi</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-lock field-icon"></i>
+                <input type="password" class="form-input" id="inputPass" value="••••••••" required>
+                <button type="button" class="btn-toggle-pass" onclick="togglePassView()">
+                  <i class="fa-regular fa-eye" id="passEye"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="boxPin" style="display:none; text-align:center;">
+            <label class="form-label">Ketik 6 Digit PIN Kasir</label>
+            <div class="pin-dots-container" id="pinDots">
+              <div class="pin-dot"></div>
+              <div class="pin-dot"></div>
+              <div class="pin-dot"></div>
+              <div class="pin-dot"></div>
+              <div class="pin-dot"></div>
+              <div class="pin-dot"></div>
+            </div>
+            <div class="keypad-grid">
+              <button type="button" class="keypad-btn" onclick="pressKey('1')">1</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('2')">2</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('3')">3</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('4')">4</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('5')">5</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('6')">6</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('7')">7</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('8')">8</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('9')">9</button>
+              <button type="button" class="keypad-btn" style="color:#ef4444;" onclick="pressKey('c')"><i class="fa-solid fa-trash-can"></i></button>
+              <button type="button" class="keypad-btn" onclick="pressKey('0')">0</button>
+              <button type="button" class="keypad-btn" onclick="pressKey('b')"><i class="fa-solid fa-delete-left"></i></button>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin:16px 0 20px 0; font-size:12.5px;">
+            <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--muted);">
+              <input type="checkbox" checked style="accent-color:var(--primary);">
+              <span>Ingat sesi di tablet ini</span>
+            </label>
+            <a href="javascript:alert('PIN Demo: \nOwner: 888888\nManajer: 555555\nKasir: 123456')" style="color:var(--primary); font-weight:700; text-decoration:none;">Bantuan Akun</a>
+          </div>
+
+          <button type="submit" class="btn-submit" id="btnSubmit">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            <span>Buka Kasir KEDAIPRO</span>
+          </button>
+        </form>
+
+        <div style="text-align:center; margin-top:14px;">
+          <a href="../kedaipro-cloud-pos/index.html" class="btn-bypass">
+            <span>Langsung Buka Tanpa Login</span>
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--muted); border-top:1px solid var(--border); padding-top:14px; margin-top:20px;">
+        <span>🔒 Enkripsi TLS 256-Bit</span>
+        <span>&copy; 2026 KEDAIPRO OS</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    const DEMO_ROLES = {
+      owner: { name: "Hendra Wijaya (Owner)", email: "owner@kedaipro.id", pin: "888888" },
+      mgr: { name: "Dian Pratama (Manajer)", email: "manager@kedaipro.id", pin: "555555" },
+      cashier: { name: "Ahmad Fauzi (Kasir)", email: "kasir@kedaipro.id", pin: "123456" }
+    };
+
+    let selectedRole = 'owner';
+    let pinCode = '';
+
+    function setRole(r) {
+      selectedRole = r;
+      document.querySelectorAll('.role-pill').forEach(el => el.classList.remove('active'));
+      if(r === 'owner') document.getElementById('pillOwner').classList.add('active');
+      if(r === 'mgr') document.getElementById('pillMgr').classList.add('active');
+      if(r === 'cashier') document.getElementById('pillCashier').classList.add('active');
+
+      const acc = DEMO_ROLES[r];
+      document.getElementById('inputUser').value = acc.email;
+      pinCode = acc.pin;
+      refreshPinDots();
+      popToast(`Akun dipilih: ${acc.name}`);
+    }
+
+    function switchLoginTab(mode) {
+      if(mode === 'email') {
+        document.getElementById('tabEmail').classList.add('active');
+        document.getElementById('tabPin').classList.remove('active');
+        document.getElementById('boxEmail').style.display = 'block';
+        document.getElementById('boxPin').style.display = 'none';
+      } else {
+        document.getElementById('tabEmail').classList.remove('active');
+        document.getElementById('tabPin').classList.add('active');
+        document.getElementById('boxEmail').style.display = 'none';
+        document.getElementById('boxPin').style.display = 'block';
+        if(!pinCode) {
+          pinCode = DEMO_ROLES[selectedRole].pin;
+          refreshPinDots();
+        }
+      }
+    }
+
+    function togglePassView() {
+      const p = document.getElementById('inputPass');
+      const eye = document.getElementById('passEye');
+      if(p.type === 'password') {
+        p.type = 'text';
+        eye.className = 'fa-regular fa-eye-slash';
+      } else {
+        p.type = 'password';
+        eye.className = 'fa-regular fa-eye';
+      }
+    }
+
+    function pressKey(k) {
+      if(k === 'c') pinCode = '';
+      else if(k === 'b') pinCode = pinCode.slice(0, -1);
+      else if(pinCode.length < 6) pinCode += k;
+      refreshPinDots();
+
+      if(pinCode.length === 6) {
+        setTimeout(loginAction, 200);
+      }
+    }
+
+    function refreshPinDots() {
+      const dots = document.querySelectorAll('#pinDots .pin-dot');
+      dots.forEach((d, i) => {
+        if(i < pinCode.length) d.classList.add('filled');
+        else d.classList.remove('filled');
+      });
+    }
+
+    function doLogin(e) {
+      e.preventDefault();
+      loginAction();
+    }
+
+    function loginAction() {
+      const btn = document.getElementById('btnSubmit');
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Membuka Kasir...</span>`;
+      btn.disabled = true;
+
+      const outlet = document.getElementById('selOutlet').value;
+      popToast(`Login Berhasil! Mengalihkan ke ${outlet}...`);
+
+      setTimeout(() => {
+        window.location.href = "../kedaipro-cloud-pos/index.html";
+      }, 700);
+    }
+
+    function popToast(msg) {
+      const c = document.getElementById('toastContainer');
+      const t = document.createElement('div');
+      t.className = 'toast show';
+      t.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${msg}</span>`;
+      c.appendChild(t);
+      setTimeout(() => {
+        t.classList.remove('show');
+        setTimeout(() => t.remove(), 300);
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
